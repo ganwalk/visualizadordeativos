@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Ativos Financeiros</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Ocultar scrollbar mantendo a funcionalidade de scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        /* Animação suave para o accordion */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
+    
+    <div class="max-w-6xl mx-auto" id="app-root">
+        <!-- O conteúdo será injetado aqui pelo JavaScript -->
+    </div>
+
+    <script>
+        // Dados extraídos e estruturados
+        const assetsData = [
+            {
+                id: 1,
+                category: "Renda Fixa - Pública",
+                name: "NTN-B (Nota do Tesouro Nacional – Série B)",
+                summary: "Tesouro IPCA+ com cupom semestral",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Você pode comprar e vender os títulos diretamente pela sua corretora ou pelo site do Tesouro Direto.",
+                costs: "Existe a taxa de custódia de 0,2% ao ano, que é calculada sobre o valor dos títulos. Essa taxa é provisionada diariamente na posição do investidor a partir da liquidação da operação de compra (D+1). A cobrança ocorre nos casos de venda antecipada, no vencimento do título ou no pagamento de juros. Além disso, pode haver uma taxa cobrada pela instituição financeira, que é livremente acordada com o investidor. O Tesouro Direto disponibiliza em seu site um ranking com as taxas cobradas por cada instituição.",
+                risks: "Ao investir em um título emitido por um país, o investidor fica exposto ao risco soberano, que é o risco de o país não conseguir arcar com suas obrigações financeiras. No entanto, os títulos públicos são geralmente considerados os investimentos mais seguros dentro de uma economia.",
+                guarantees: "Como garantia formal, existe a garantia do Tesouro Nacional, que em tese protege os valores de quem possui o papel, mesmo que uma corretora que intermedeie venha a quebrar."
+            },
+            {
+                id: 2,
+                category: "Renda Fixa - Pública",
+                name: "NTN-B Principal (Nota do Tesouro Nacional – Série B Principal)",
+                summary: "Tesouro IPCA+ com recebimento integral no vencimento",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Você pode comprar e vender os títulos diretamente pela sua corretora ou pelo site do Tesouro Direto.",
+                costs: "Existe a taxa de custódia da B3 de 0,2% ao ano, que é calculada sobre o valor dos títulos. Essa taxa é provisionada diariamente na posição do investidor a partir da liquidação da operação de compra (D+1). A cobrança ocorre nos casos de venda antecipada, no vencimento do título ou no pagamento de juros. Além disso, pode haver uma taxa cobrada pela instituição financeira, que é livremente acordada com o investidor. O Tesouro Direto disponibiliza em seu site um ranking com as taxas cobradas por cada instituição.",
+                risks: "Ao investir em um título emitido por um país, o investidor fica exposto ao risco soberano, que é o risco de o país não conseguir arcar com suas obrigações financeiras. No entanto, os títulos públicos são geralmente considerados os investimentos mais seguros dentro de uma economia.",
+                guarantees: "Como garantia formal, existe a garantia do Tesouro Nacional, que em tese protege os valores de quem possui o papel, mesmo que uma corretora que intermedeie venha a quebrar."
+            },
+            {
+                id: 15,
+                category: "Renda Fixa - Pública",
+                name: "NTN-F (Nota do Tesouro Nacional - Série F)",
+                summary: "Tesouro Prefixado com Juros Semestrais",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Você pode comprar e vender os títulos diretamente pela sua corretora ou pelo site do Tesouro Direto.",
+                costs: "Existe a taxa de custódia da B3 de 0,2% ao ano, que é calculada sobre o valor dos títulos. Essa taxa é provisionada diariamente na posição do investidor a partir da liquidação da operação de compra (D+1). A cobrança ocorre nos casos de venda antecipada, no vencimento do título ou no pagamento de juros. Além disso, pode haver uma taxa cobrada pela instituição financeira, que é livremente acordada com o investidor. O Tesouro Direto disponibiliza em seu site um ranking com as taxas cobradas por cada instituição.",
+                risks: "Ao investir em um título emitido por um país, o investidor fica exposto ao risco soberano, que é o risco de o país não conseguir arcar com suas obrigações financeiras. No entanto, os títulos públicos são geralmente considerados os investimentos mais seguros dentro de uma economia.",
+                guarantees: "Como garantia formal, existe a garantia do Tesouro Nacional, que em tese protege os valores de quem possui o papel, mesmo que uma corretora que intermedeie venha a quebrar."
+            },
+            {
+                id: 16,
+                category: "Renda Fixa - Pública",
+                name: "Tesouro RendA+",
+                summary: "Focado em aposentadoria, atrelado à inflação.",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Você pode comprar e vender os títulos diretamente pela sua corretora ou pelo site do Tesouro Direto.",
+                costs: "Isenção de taxa de custódia para quem carrega o título até o vencimento (limite de 6 salários mínimos mensais). Venda antecipada < 10 anos: 0,50% a.a.; entre 10 e 20 anos: 0,20% a.a.; > 20 anos: 0,10% a.a.",
+                risks: "Ao investir em um título emitido por um país, o investidor fica exposto ao risco soberano, que é o risco de o país não conseguir arcar com suas obrigações financeiras. No entanto, os títulos públicos são geralmente considerados os investimentos mais seguros dentro de uma economia.",
+                guarantees: "Como garantia formal, existe a garantia do Tesouro Nacional, que em tese protege os valores de quem possui o papel, mesmo que uma corretora que intermedeie venha a quebrar."
+            },
+            {
+                id: 17,
+                category: "Renda Fixa - Pública",
+                name: "Tesouro Educa+",
+                summary: "Focado em custear estudos, atrelado à inflação.",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Você pode comprar e vender os títulos diretamente pela sua corretora ou pelo site do Tesouro Direto.",
+                costs: "Isenção de taxa de custódia se levado até o vencimento (limite de 4 salários mínimos). Venda antecipada < 7 anos: 0,50% a.a.; entre 7 e 14 anos: 0,20% a.a.; > 14 anos: 0,10% a.a.",
+                risks: "Ao investir em um título emitido por um país, o investidor fica exposto ao risco soberano, que é o risco de o país não conseguir arcar com suas obrigações financeiras. No entanto, os títulos públicos são geralmente considerados os investimentos mais seguros dentro de uma economia.",
+                guarantees: "Como garantia formal, existe a garantia do Tesouro Nacional, que em tese protege os valores de quem possui o papel, mesmo que uma corretora que intermedeie venha a quebrar."
+            },
+            {
+                id: 5,
+                category: "Renda Fixa - Privada Bancária",
+                name: "CDB (Certificado de Depósito Bancário)",
+                summary: "Empréstimo para que o banco possa financiar suas atividades de crédito.",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Plataforma de corretoras de valores mobiliários ou diretamente nas plataformas de bancos.",
+                costs: "Não há custos diretos para o investidor (não há taxa de custódia nem corretagem, via de regra). A remuneração das plataformas já vem embutida na taxa de captação (spread bancário).",
+                risks: "Risco de crédito da instituição emissora (o banco pode quebrar ou dar um calote).",
+                guarantees: "Conta com a proteção do FGC (Fundo Garantidor de Créditos) para valores de até R$ 250 mil por CPF/CNPJ, por conglomerado financeiro, limitado ao teto global de R$ 1 milhão, a cada período de 4 anos."
+            },
+            {
+                id: 6,
+                category: "Renda Fixa - Privada Bancária",
+                name: "LCI / LCA (Letras de Crédito Imobiliário / do Agronegócio)",
+                summary: "Títulos emitidos por bancos onde os recursos captados são direcionados especificamente para financiar os setores imobiliário ou do agronegócio.",
+                taxPF: "Isento de Imposto de Renda (IR) para Pessoa Física.",
+                taxPJ: "Não são isentos para Pessoa Jurídica (incide IR regressivo de 15% a 22,5%).",
+                howToBuy: "Plataforma de corretoras de valores mobiliários ou diretamente nas plataformas de bancos.",
+                costs: "Não há custos diretos para o investidor (não há taxa de custódia nem corretagem).",
+                risks: "Risco de crédito do emissor (o banco não pagar) e risco de liquidez, pois a regulamentação exige um prazo mínimo de carência (o dinheiro fica preso no início) que varia de 9 meses a 12 meses antes do primeiro resgate, a depender do indexador e ativo.",
+                guarantees: "Conta com a proteção do FGC (Fundo Garantidor de Créditos) para valores de até R$ 250 mil por CPF/CNPJ, por conglomerado financeiro, limitado ao teto global de R$ 1 milhão, a cada período de 4 anos."
+            },
+            {
+                id: 18,
+                category: "Renda Fixa - Privada Bancária",
+                name: "LF (Letra Financeira)",
+                summary: "Empréstimos de longo prazo para as instituições financeiras. São títulos voltados para investidores de alta renda ou institucionais devido ao alto valor de entrada e risco.",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Plataforma de corretoras de valores mobiliários ou diretamente nas plataformas de bancos (mercado primário ou secundário).",
+                costs: "Sem taxa de custódia ou corretagem na maioria das plataformas.",
+                risks: "Risco de crédito da instituição financeira. Risco de liquidez muito elevado, uma vez que o vencimento mínimo legal é de dois anos e não pode haver resgate antecipado parcial ou total.",
+                guarantees: "NÃO POSSUEM cobertura do Fundo Garantidor de Créditos (FGC). A garantia é a saúde financeira da própria instituição emissora."
+            },
+            {
+                id: 19,
+                category: "Renda Fixa - Privada Bancária",
+                name: "LC (Letra de Câmbio)",
+                summary: "Títulos emitidos não por bancos, mas por sociedades de crédito, financiamento e investimento (as chamadas financeiras) para captar recursos.",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Plataforma de corretoras de valores mobiliários.",
+                costs: "Sem custos diretos (sem custódia ou corretagem).",
+                risks: "Risco de crédito da emissora. Financeiras costumam ter um risco mais elevado que bancos tradicionais, logo costumam pagar taxas de juros mais atrativas para compensar.",
+                guarantees: "Conta com a proteção do FGC (Fundo Garantidor de Créditos) para valores de até R$ 250 mil por CPF/CNPJ, por conglomerado financeiro, limitado a R$ 1 milhão, a cada período de 4 anos."
+            },
+            {
+                id: 20,
+                category: "Renda Fixa - Privada Bancária",
+                name: "DPGE (Depósito a Prazo com Garantia Especial)",
+                summary: "Título criado para ajudar bancos de pequeno e médio porte a captarem recursos. Geralmente possui valores de aplicação iniciais muito altos (a partir de R$ 1 milhão).",
+                taxPF: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                taxPJ: "IR regressivo (15% a 22,5%) + IOF até 30 dias",
+                howToBuy: "Plataforma de corretoras e diretamente nos bancos emissores.",
+                costs: "Sem custos diretos (sem custódia ou corretagem).",
+                risks: "Risco de liquidez altíssimo, pois o prazo mínimo é de 6 meses a 36 meses e não admite resgate antecipado. Risco de crédito do banco (embora mitigado pela garantia especial).",
+                guarantees: "O grande atrativo: A proteção do Fundo Garantidor de Créditos (FGC) é de R$ 40 milhões (quarenta milhões de reais) por CPF/CNPJ contra a instituição financeira emissora. Não se confunde com o limite comum de 250 mil."
+            },
+            {
+                id: 21,
+                category: "Renda Fixa - Privada Bancária",
+                name: "LIG (Letra Imobiliária Garantida)",
+                summary: "Títulos emitidos por bancos atrelados a financiamentos imobiliários. A diferença para a LCI é que a LIG possui uma dupla garantia.",
+                taxPF: "Isento de Imposto de Renda (IR) para Pessoa Física.",
+                taxPJ: "Não são isentos para Pessoa Jurídica (incide IR regressivo de 15% a 22,5%).",
+                howToBuy: "Plataforma de corretoras de valores mobiliários ou diretamente nas plataformas de bancos.",
+                costs: "Não há custos diretos para o investidor (não há taxa de custódia nem corretagem, via de regra). A remuneração das plataformas já vem embutida na taxa de captação (spread bancário).",
+                risks: "Risco de liquidez. Em geral o prazo de investimento é longo e não há possibilidade de resgate antecipado antes do vencimento.",
+                guarantees: "Possui dupla garantia: a da própria instituição financeira emissora (como em um CDB) e uma carteira de financiamentos imobiliários separada do patrimônio do banco. Contudo, NÃO POSSUI cobertura do Fundo Garantidor de Créditos (FGC)."
+            },
+            {
+                id: 7,
+                category: "Renda Fixa - Crédito Privado",
+                name: "CRI / CRA",
+                summary: "Certificados de Recebíveis Imobiliários e do Agronegócio.",
+                taxPF: "Isento de Imposto de Renda para Pessoa Física.",
+                taxPJ: "IR regressivo (15% a 22,5%).",
+                howToBuy: "Via corretoras (mercado primário em ofertas ou secundário).",
+                costs: "Pode haver corretagem dependendo da instituição.",
+                risks: "Risco de crédito da empresa devedora e risco de liquidez.",
+                guarantees: "Garantias reais (imóveis, recebíveis), mas NÃO possui FGC."
+            },
+            {
+                id: 8,
+                category: "Renda Fixa - Crédito Privado",
+                name: "Debêntures",
+                summary: "Títulos de dívida de empresas privadas (S.A.) para financiar projetos.",
+                taxPF: "Debêntures comuns: IR Regressivo. Incentivadas: Isentas.",
+                taxPJ: "IR regressivo para ambas.",
+                howToBuy: "Via corretoras de valores.",
+                costs: "Possível taxa de corretagem.",
+                risks: "Risco de crédito da empresa emissora (falência) e liquidez.",
+                guarantees: "Não possui FGC. A garantia depende do tipo da debênture."
+            },
+            {
+                id: 9,
+                category: "Renda Variável",
+                name: "Ações (B3)",
+                summary: "Fração do capital de uma empresa. O acionista torna-se sócio.",
+                taxPF: "15% (Swing Trade) com isenção até R$ 20k/mês. 20% (Day Trade).",
+                taxPJ: "15% sobre o lucro líquido (pode variar por regime tributário).",
+                howToBuy: "Home Broker das corretoras de valores.",
+                costs: "Corretagem + Emolumentos e Taxa de Liquidação (B3).",
+                risks: "Risco de mercado (alta volatilidade) e risco do negócio/empresa.",
+                guarantees: "Nenhuma garantia de retorno. Ativos custodiados na B3 em nome do CPF."
+            },
+            {
+                id: 10,
+                category: "Renda Variável",
+                name: "FIIs (Fundos Imobiliários)",
+                summary: "Fundos para investimento em grandes empreendimentos imobiliários.",
+                taxPF: "Rendimentos isentos. Ganho de capital na venda: 20%.",
+                taxPJ: "Tributação sobre rendimentos e 20% sobre ganho de capital.",
+                howToBuy: "Home Broker de corretoras, como se fossem ações.",
+                costs: "Corretagem + Emolumentos + Taxa de administração do gestor.",
+                risks: "Risco de mercado, vacância física e inadimplência de inquilinos.",
+                guarantees: "Lastreado em imóveis ou CRIs, sem proteção do FGC."
+            },
+            {
+                id: 11,
+                category: "Renda Variável",
+                name: "ETFs (Fundos de Índice)",
+                summary: "Fundos negociados em bolsa que replicam índices (Ibovespa, S&P 500).",
+                taxPF: "15% sobre ganho de capital. Sem isenção dos R$ 20 mil.",
+                taxPJ: "15% sobre ganho de capital.",
+                howToBuy: "Home Broker das corretoras.",
+                costs: "Corretagem + Emolumentos B3 + Taxa de administração.",
+                risks: "Risco de mercado do índice subjacente.",
+                guarantees: "Sem garantias. Diversificação natural por representar um índice."
+            },
+            {
+                id: 12,
+                category: "Criptoativos",
+                name: "Bitcoin (BTC)",
+                summary: "A maior criptomoeda do mundo, funciona de forma descentralizada.",
+                taxPF: "15% sobre o lucro líquido para ganhos até R$ 5 milhões.",
+                taxPJ: "Varia conforme o regime tributário da empresa.",
+                howToBuy: "Exchanges (corretoras cripto), plataformas bancárias ou ETFs.",
+                costs: "Taxas da corretora + Taxa da rede (mineradores) para saques.",
+                risks: "Altíssima volatilidade, risco regulatório global e tecnológico.",
+                guarantees: "Segurança criptográfica e Blockchain, sem fundo garantidor."
+            },
+            {
+                id: 13,
+                category: "Criptoativos",
+                name: "Altcoins (ex.: Ethereum, Solana)",
+                summary: "Criptoativos de redes com contratos inteligentes e aplicações DeFi.",
+                taxPF: "15% sobre lucro líquido. Ganhos altos podem chegar a 22,5%.",
+                taxPJ: "Ganhos de capital conforme regime da empresa.",
+                howToBuy: "Exchanges, plataformas bancárias e P2P.",
+                costs: "Taxas de corretagem + Taxa de Rede (Gas) para transferências.",
+                risks: "Risco tecnológico, falhas em protocolos ou falta de adoção.",
+                guarantees: "Inexistentes. Risco total do investidor. Sem regulação CVM."
+            },
+            {
+                id: 14,
+                category: "Criptoativos",
+                name: "Stablecoins (ex.: USDT, USDC)",
+                summary: "Criptomoedas que buscam a paridade com moedas fiduciárias (Dólar).",
+                taxPF: "15% sobre o lucro líquido sobre variação cambial.",
+                taxPJ: "Alíquota variável dependendo do regime tributário.",
+                howToBuy: "Corretoras/exchanges e plataformas bancárias.",
+                costs: "Taxas de corretagem e taxas de saque da rede.",
+                risks: "Risco de crédito da emissora e transparência das reservas de lastro.",
+                guarantees: "Não possui FGC. Depende das auditorias da empresa emissora."
+            }
+        ];
+
+        // Estado da aplicação
+        let searchTerm = "";
+        let selectedCategory = "Todos";
+        let expandedId = null;
+
+        // Configurações de UI
+        const categories = ["Todos", ...new Set(assetsData.map(a => a.category))];
+
+        const getCategoryIconDetails = (cat) => {
+            switch(cat) {
+                case "Renda Fixa - Pública": return { name: "shield-check", color: "text-blue-500" };
+                case "Renda Fixa - Privada Bancária": return { name: "building-2", color: "text-indigo-500" };
+                case "Renda Fixa - Crédito Privado": return { name: "wallet", color: "text-teal-500" };
+                case "Criptoativos": return { name: "coins", color: "text-orange-500" };
+                case "Renda Variável": return { name: "trending-up", color: "text-green-500" };
+                default: return { name: "line-chart", color: "text-gray-500" };
+            }
+        };
+
+        // Funções de manipulação de estado
+        window.handleSearch = (e) => {
+            searchTerm = e.value;
+            expandedId = null; // Fechar o accordion ao pesquisar
+            render();
+        };
+
+        window.setCategory = (cat) => {
+            selectedCategory = cat;
+            expandedId = null; // Fechar o accordion ao mudar de categoria
+            render();
+        };
+
+        window.toggleExpand = (id) => {
+            expandedId = expandedId === id ? null : id;
+            render();
+        };
+
+        window.clearFilters = () => {
+            searchTerm = "";
+            selectedCategory = "Todos";
+            expandedId = null;
+            render();
+        };
+
+        // Função principal de Renderização
+        function render() {
+            const root = document.getElementById('app-root');
+            
+            // Filtrar ativos
+            const filteredAssets = assetsData.filter(asset => {
+                const matchesSearch = asset.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                      asset.summary.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesCategory = selectedCategory === "Todos" || asset.category === selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            // HTML Base (Header, Pesquisa, Filtros)
+            let html = `
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-slate-800 mb-2">Painel de Ativos Completo</h1>
+                    <p class="text-slate-600">Explore, compare e entenda os riscos e tributações de cada ativo financeiro.</p>
+                </header>
+
+                <div class="flex flex-col md:flex-row gap-4 mb-8">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                        <input 
+                            type="text" 
+                            placeholder="Buscar ativo ou característica..." 
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
+                            value="${searchTerm}"
+                            oninput="handleSearch(this)"
+                        />
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+                        ${categories.map(cat => `
+                            <button
+                                onclick="setCategory('${cat}')"
+                                class="px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
+                                    selectedCategory === cat 
+                                    ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
+                                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                                }"
+                            >
+                                ${cat}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // HTML da Lista de Ativos
+            html += `<div class="grid grid-cols-1 gap-4">`;
+
+            if (filteredAssets.length > 0) {
+                html += filteredAssets.map(asset => {
+                    const isExpanded = expandedId === asset.id;
+                    const iconDetails = getCategoryIconDetails(asset.category);
+                    const riskWarning = asset.risks.toLowerCase().includes('altíssima') || asset.risks.toLowerCase().includes('volatilidade') 
+                        ? "bg-red-50 text-red-600" 
+                        : "bg-green-50 text-green-600";
+
+                    return `
+                    <div class="bg-white rounded-2xl border transition-all duration-300 ${
+                        isExpanded ? "border-blue-400 ring-1 ring-blue-100 shadow-lg" : "border-slate-200 hover:shadow-md"
+                    }">
+                        <div class="p-5 cursor-pointer flex items-center justify-between" onclick="toggleExpand(${asset.id})">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-slate-50 rounded-xl">
+                                    <i data-lucide="${iconDetails.name}" class="${iconDetails.color}"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${asset.category}</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-slate-800">${asset.name}</h3>
+                                    <p class="text-sm text-slate-500 mt-1 line-clamp-1">${asset.summary}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="hidden md:flex flex-col items-end">
+                                    <span class="text-[10px] uppercase font-bold text-slate-400">Risco</span>
+                                    <span class="text-xs font-bold px-2 py-1 rounded mt-1 ${riskWarning}">
+                                        ${asset.risks.split('.')[0]}
+                                    </span>
+                                </div>
+                                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="text-slate-400 w-5 h-5"></i>
+                            </div>
+                        </div>
+
+                        ${isExpanded ? `
+                        <div class="border-t border-slate-100 p-6 bg-slate-50/50 rounded-b-2xl animate-fade-in">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <section>
+                                    <div class="flex items-center gap-2 text-blue-600 font-bold mb-3">
+                                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                                        <h4>Tributação</h4>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase">Pessoa Física (PF)</p>
+                                            <p class="text-sm text-slate-700 leading-relaxed">${asset.taxPF}</p>
+                                        </div>
+                                        <div class="bg-white p-3 rounded-lg border border-slate-200">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase">Pessoa Jurídica (PJ)</p>
+                                            <p class="text-sm text-slate-700 leading-relaxed">${asset.taxPJ}</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <div class="flex items-center gap-2 text-indigo-600 font-bold mb-3">
+                                        <i data-lucide="building-2" class="w-4 h-4"></i>
+                                        <h4>Operacional</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h5 class="text-xs font-bold text-slate-500 mb-1">Como Comprar:</h5>
+                                            <p class="text-sm text-slate-700">${asset.howToBuy}</p>
+                                        </div>
+                                        <div>
+                                            <h5 class="text-xs font-bold text-slate-500 mb-1">Custos Adicionais:</h5>
+                                            <p class="text-sm text-slate-700">${asset.costs}</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <div class="flex items-center gap-2 text-amber-600 font-bold mb-3">
+                                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                        <h4>Segurança</h4>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex gap-3">
+                                            <i data-lucide="alert-triangle" class="text-amber-500 shrink-0 mt-1 w-4 h-4"></i>
+                                            <div>
+                                                <h5 class="text-xs font-bold text-slate-500 mb-1">Principais Riscos:</h5>
+                                                <p class="text-sm text-slate-700">${asset.risks}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <i data-lucide="lock" class="text-blue-500 shrink-0 mt-1 w-4 h-4"></i>
+                                            <div>
+                                                <h5 class="text-xs font-bold text-slate-500 mb-1">Garantias:</h5>
+                                                <p class="text-sm text-slate-700">${asset.guarantees}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    `;
+                }).join('');
+            } else {
+                html += `
+                    <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+                        <div class="flex justify-center mb-4">
+                            <i data-lucide="search" class="text-slate-300 w-12 h-12"></i>
+                        </div>
+                        <p class="text-slate-500">Nenhum ativo encontrado com esses filtros.</p>
+                        <button 
+                            onclick="clearFilters()"
+                            class="mt-4 text-blue-600 font-medium hover:underline cursor-pointer"
+                        >
+                            Limpar todos os filtros
+                        </button>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+
+            // Footer
+            html += `
+                <footer class="mt-12 text-center text-slate-400 text-xs">
+                    <p>© 2026 Explorador de Ativos - Dados baseados na Tabela Completa de Ativos.</p>
+                    <p class="mt-1">Lembre-se: Rentabilidade passada não é garantia de retorno futuro.</p>
+                </footer>
+            `;
+
+            // Injetar HTML no DOM
+            root.innerHTML = html;
+
+            // Renderizar os ícones do Lucide após modificar o DOM
+            lucide.createIcons();
+
+            // Garantir que o input de pesquisa não perca o foco se estava a ser utilizado
+            const searchInput = document.querySelector('input[type="text"]');
+            if (searchInput && document.activeElement !== searchInput && searchTerm !== "") {
+                searchInput.focus();
+                // Colocar o cursor no fim do texto
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+        }
+
+        // Renderização Inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            render();
+        });
+
+    </script>
+</body>
+</html>
