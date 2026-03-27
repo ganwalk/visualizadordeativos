@@ -33,9 +33,9 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
-    
-    <div class="max-w-6xl mx-auto" id="app-root">
+<body class="min-h-screen bg-slate-50 p-3 sm:p-6 lg:p-8 font-sans text-slate-900">
+
+    <div class="max-w-6xl mx-auto w-full" id="app-root">
         <!-- O conteúdo será injetado aqui pelo JavaScript -->
     </div>
 
@@ -383,8 +383,8 @@
                 category: "Renda Variável",
                 name: "BDRs (Brazilian Depositary Receipts)",
                 summary: "São certificados negociados na bolsa brasileira (B3) que representam ações de empresas estrangeiras. Na prática, permitem que investidores brasileiros invistam em companhias globais — como Apple, Google, Amazon, McDonald's e Tesla — sem precisar abrir conta ou enviar dinheiro para o exterior.",
-                taxPF: "A tributação de BDRs no Brasil incide sobre o lucro na venda e sobre os dividendos recebidos. Nas operações de compra e venda em dias diferentes, a alíquota é de 15% sobre o lucro líquido. Diferentemente das ações brasileiras, não existe isenção para vendas abaixo de R$ 20 mil por mês. Há também a retenção do chamado \"dedo-duro\", de 0,005% sobre o valor de venda em operações de compra e venda em dias diferentes. Os dividendos recebidos do exterior seguem a tabela progressiva do Imposto de Renda, podendo chegar a 27,5%, com possibilidade de compensação de eventual imposto pago no exterior. O investidor é responsável pelo cálculo e pagamento do imposto, por meio de DARF até o último dia útil do mês seguinte à venda com lucro.",
-                taxPJ: "A tributação de BDRs no Brasil incide sobre o lucro na venda e sobre os dividendos recebidos. Nas operações de compra e venda no mesmo dia, a alíquota é de 20% sobre o lucro líquido. Diferentemente das ações brasileiras, não existe isenção para vendas abaixo de R$ 20 mil por mês. Há também a retenção do chamado \"dedo-duro\", de 1,00% sobre o valor de venda em operações de compra e venda no mesmo dia. Os dividendos recebidos do exterior seguem a tabela progressiva do Imposto de Renda, podendo chegar a 27,5%, com possibilidade de compensação de eventual imposto pago no exterior. O investidor é responsável pelo cálculo e pagamento do imposto, por meio de DARF até o último dia útil do mês seguinte à venda com lucro.",
+                taxPF: "A tributação de BDRs no Brasil incide sobre o lucro na venda e sobre os dividendos recebidos. Nas operações de compra e venda no mesmo dia, a alíquota é de 20% sobre o lucro líquido. Diferentemente das ações brasileiras, não existe isenção para vendas abaixo de R$ 20 mil por mês. Há também a retenção do chamado \"dedo-duro\", de 1,00% sobre o valor de venda em operações de compra e venda no mesmo dia. Os dividendos recebidos do exterior seguem a tabela progressiva do Imposto de Renda, podendo chegar a 27,5%, com possibilidade de compensação de eventual imposto pago no exterior. O investidor é responsável pelo cálculo e pagamento do imposto, por meio de DARF até o último dia útil do mês seguinte à venda com lucro.",
+                taxPJ: "A tributação de BDRs no Brasil incide sobre o lucro na venda e sobre os dividendos recebidos. Nas operações de compra e venda em dias diferentes, a alíquota é de 15% sobre o lucro líquido. Diferentemente das ações brasileiras, não existe isenção para vendas abaixo de R$ 20 mil por mês. Há também a retenção do chamado \"dedo-duro\", de 0,005% sobre o valor de venda em operações de compra e venda em dias diferentes. Os dividendos recebidos do exterior seguem a tabela progressiva do Imposto de Renda, podendo chegar a 27,5%, com possibilidade de compensação de eventual imposto pago no exterior. O investidor é responsável pelo cálculo e pagamento do imposto, por meio de DARF até o último dia útil do mês seguinte à venda com lucro.",
                 howToBuy: "Diretamente pelo Home Broker da sua corretora. Pode ser pelo celular ou pelo computador.",
                 costs: "Pode haver taxas dependendo da sua corretora. Ela pode cobrar taxas de corretagem para compra e venda e também taxa de custódia. Vale a pena verificar quais são os custos dessa operação na sua corretora.",
                 risks: "Ao investir em BDRs, o investidor fica exposto ao risco de mercado, relacionado à variação no preço dos certificados negociados na bolsa. Também há o risco específico da empresa estrangeira à qual o BDR está vinculado, ligado a fatores internos como decisões da gestão, resultados financeiros ou mudanças no modelo de negócio. Além disso, existe o risco sistemático, que afeta todo o mercado e pode ser causado por eventos econômicos ou geopolíticos, como crises, pandemias ou guerras. Outro fator é o risco de liquidez, que representa a possibilidade de não conseguir vender os certificados rapidamente ou apenas a um preço inferior ao esperado. Por fim, há também o risco cambial, já que o valor dos BDRs é influenciado pela variação do câmbio entre o real e a moeda do país de origem da empresa, o que pode aumentar ou reduzir o retorno do investimento.",
@@ -510,29 +510,29 @@
 
             // HTML Base (Header, Pesquisa, Filtros)
             let html = `
-                <header class="mb-8">
-                    <h1 class="text-3xl font-bold text-slate-800 mb-2">Explorador de Ativos Financeiros: Tributação, Riscos e Garantias</h1>
-                    <p class="text-slate-600">Explore, compare e entenda os riscos e tributações de cada ativo financeiro.</p>
+                <header class="mb-6">
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">Explorador de Ativos Financeiros: Tributação, Riscos e Garantias</h1>
+                    <p class="text-sm sm:text-base text-slate-600">Explore, compare e entenda os riscos e tributações de cada ativo financeiro.</p>
                 </header>
 
-                <div class="flex flex-col md:flex-row gap-4 mb-8">
-                    <div class="relative flex-1">
+                <div class="mb-6 space-y-3">
+                    <div class="relative w-full">
                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
-                        <input 
-                            type="text" 
-                            placeholder="Buscar ativo ou característica..." 
+                        <input
+                            type="text"
+                            placeholder="Buscar ativo ou característica..."
                             class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
                             value="${searchTerm}"
                             oninput="handleSearch(this)"
                         />
                     </div>
-                    <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                         ${categories.map(cat => `
                             <button
                                 onclick="setCategory('${cat}')"
-                                class="px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
-                                    selectedCategory === cat 
-                                    ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
+                                class="px-3 sm:px-4 py-2 rounded-full whitespace-nowrap text-xs sm:text-sm font-medium transition-all ${
+                                    selectedCategory === cat
+                                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
                                 }"
                             >
@@ -564,85 +564,83 @@
                     <div class="bg-white rounded-2xl border transition-all duration-300 ${
                         isExpanded ? "border-blue-400 ring-1 ring-blue-100 shadow-lg" : "border-slate-200 hover:shadow-md"
                     }">
-                        <div class="p-5 cursor-pointer flex items-center justify-between" onclick="toggleExpand(${asset.id})">
-                            <div class="flex items-center gap-4">
-                                <div class="p-3 bg-slate-50 rounded-xl">
-                                    <i data-lucide="${iconDetails.name}" class="${iconDetails.color}"></i>
+                        <div class="p-4 sm:p-5 cursor-pointer flex items-center justify-between gap-3" onclick="toggleExpand(${asset.id})">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="p-2 sm:p-3 bg-slate-50 rounded-xl shrink-0">
+                                    <i data-lucide="${iconDetails.name}" class="${iconDetails.color} w-4 h-4 sm:w-5 sm:h-5"></i>
                                 </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${asset.category}</span>
-                                    </div>
-                                    <h3 class="text-lg font-bold text-slate-800">${asset.name}</h3>
-                                    <p class="text-sm text-slate-500 mt-1 line-clamp-1">${asset.summary}</p>
+                                <div class="min-w-0">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">${asset.category}</span>
+                                    <h3 class="text-sm sm:text-base lg:text-lg font-bold text-slate-800 leading-tight">${asset.name}</h3>
+                                    <p class="text-xs sm:text-sm text-slate-500 mt-0.5 line-clamp-1">${asset.summary}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <div class="hidden md:flex flex-col items-end">
-                                    <span class="text-[10px] uppercase font-bold text-slate-400">Risco</span>
-                                    <span class="text-xs font-bold px-2 py-1 rounded mt-1 ${riskWarning}">
-                                        ${asset.risks.split('.')[0]}
+                            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                                <div class="flex flex-col items-end">
+                                    <span class="text-[10px] uppercase font-bold text-slate-400 hidden sm:block">Risco</span>
+                                    <span class="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded ${riskWarning}">
+                                        ${asset.risks.split('.')[0].substring(0, 30)}${asset.risks.split('.')[0].length > 30 ? '…' : ''}
                                     </span>
                                 </div>
-                                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="text-slate-400 w-5 h-5"></i>
+                                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="text-slate-400 w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
 
                         ${isExpanded ? `
-                        <div class="border-t border-slate-100 p-6 bg-slate-50/50 rounded-b-2xl animate-fade-in">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="border-t border-slate-100 p-4 sm:p-6 bg-slate-50/50 rounded-b-2xl animate-fade-in">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                                 <section>
                                     <div class="flex items-center gap-2 text-blue-600 font-bold mb-3">
-                                        <i data-lucide="wallet" class="w-4 h-4"></i>
-                                        <h4>Tributação</h4>
+                                        <i data-lucide="wallet" class="w-4 h-4 shrink-0"></i>
+                                        <h4 class="text-sm sm:text-base">Tributação</h4>
                                     </div>
-                                    <div class="space-y-3">
-                                        <div class="bg-white p-3 rounded-lg border border-slate-200">
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase">${taxLabel1}</p>
-                                            <p class="text-sm text-slate-700 leading-relaxed">${asset.taxPF}</p>
+                                    <div class="space-y-2 sm:space-y-3">
+                                        <div class="bg-white p-2.5 sm:p-3 rounded-lg border border-slate-200">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">${taxLabel1}</p>
+                                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${asset.taxPF}</p>
                                         </div>
-                                        <div class="bg-white p-3 rounded-lg border border-slate-200">
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase">${taxLabel2}</p>
-                                            <p class="text-sm text-slate-700 leading-relaxed">${asset.taxPJ}</p>
+                                        <div class="bg-white p-2.5 sm:p-3 rounded-lg border border-slate-200">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">${taxLabel2}</p>
+                                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${asset.taxPJ}</p>
                                         </div>
                                     </div>
                                 </section>
 
                                 <section>
                                     <div class="flex items-center gap-2 text-indigo-600 font-bold mb-3">
-                                        <i data-lucide="building-2" class="w-4 h-4"></i>
-                                        <h4>Operacional</h4>
+                                        <i data-lucide="building-2" class="w-4 h-4 shrink-0"></i>
+                                        <h4 class="text-sm sm:text-base">Operacional</h4>
                                     </div>
-                                    <div class="space-y-4">
+                                    <div class="space-y-3 sm:space-y-4">
                                         <div>
-                                            <h5 class="text-xs font-bold text-slate-500 mb-1">Como Comprar:</h5>
-                                            <p class="text-sm text-slate-700">${asset.howToBuy}</p>
+                                            <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Como Comprar:</h5>
+                                            <p class="text-xs sm:text-sm text-slate-700">${asset.howToBuy}</p>
                                         </div>
                                         <div>
-                                            <h5 class="text-xs font-bold text-slate-500 mb-1">Custos Adicionais:</h5>
-                                            <p class="text-sm text-slate-700">${asset.costs}</p>
+                                            <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Custos Adicionais:</h5>
+                                            <p class="text-xs sm:text-sm text-slate-700">${asset.costs}</p>
                                         </div>
                                     </div>
                                 </section>
 
                                 <section>
                                     <div class="flex items-center gap-2 text-amber-600 font-bold mb-3">
-                                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                                        <h4>Segurança</h4>
+                                        <i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i>
+                                        <h4 class="text-sm sm:text-base">Segurança</h4>
                                     </div>
-                                    <div class="space-y-4">
-                                        <div class="flex gap-3">
-                                            <i data-lucide="alert-triangle" class="text-amber-500 shrink-0 mt-1 w-4 h-4"></i>
+                                    <div class="space-y-3 sm:space-y-4">
+                                        <div class="flex gap-2 sm:gap-3">
+                                            <i data-lucide="alert-triangle" class="text-amber-500 shrink-0 mt-0.5 w-4 h-4"></i>
                                             <div>
-                                                <h5 class="text-xs font-bold text-slate-500 mb-1">Principais Riscos:</h5>
-                                                <p class="text-sm text-slate-700">${asset.risks}</p>
+                                                <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Principais Riscos:</h5>
+                                                <p class="text-xs sm:text-sm text-slate-700">${asset.risks}</p>
                                             </div>
                                         </div>
-                                        <div class="flex gap-3">
-                                            <i data-lucide="lock" class="text-blue-500 shrink-0 mt-1 w-4 h-4"></i>
+                                        <div class="flex gap-2 sm:gap-3">
+                                            <i data-lucide="lock" class="text-blue-500 shrink-0 mt-0.5 w-4 h-4"></i>
                                             <div>
-                                                <h5 class="text-xs font-bold text-slate-500 mb-1">Garantias:</h5>
-                                                <p class="text-sm text-slate-700">${asset.guarantees}</p>
+                                                <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Garantias:</h5>
+                                                <p class="text-xs sm:text-sm text-slate-700">${asset.guarantees}</p>
                                             </div>
                                         </div>
                                     </div>
