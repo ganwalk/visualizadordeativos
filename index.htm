@@ -199,6 +199,43 @@
             transition: color 0.2s;
         }
         .clear-btn:hover { color: var(--gold); }
+
+        /* ── Line-clamp-2 ── */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ── View toggle buttons ── */
+        .view-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .view-toggle-btn:hover {
+            background: var(--gold-bg);
+            border-color: var(--gold);
+            color: var(--gold-dark);
+        }
+        .view-toggle-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #18181b;
+            box-shadow: 0 4px 14px var(--gold-shadow);
+        }
     </style>
 </head>
 <body class="min-h-screen p-3 sm:p-6 lg:p-8" style="color: var(--text-primary)">
@@ -624,6 +661,7 @@
         let searchTerm = "";
         let selectedCategory = "Todos";
         let expandedId = null;
+        let viewMode = "list";
 
         // Configurações de UI
         const categories = ["Todos", ...new Set(assetsData.map(a => a.category))];
@@ -701,6 +739,11 @@
             render();
         };
 
+        window.setViewMode = (mode) => {
+            viewMode = mode;
+            render();
+        };
+
         // Função principal de Renderização
         function render() {
             const root = document.getElementById('app-root');
@@ -715,17 +758,22 @@
 
             // HTML Base (Header, Pesquisa, Filtros)
             let html = `
-                <header class="mb-7">
-                    <p class="category-tag mb-3">Ferramentas de Investimento</p>
-                    <h1 style="font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 6px;">
+                <header class="mb-8" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+                    <img
+                        src="https://raw.githubusercontent.com/ganwalk/visualizadordeativos/main/AUVP%20-%20HORIZONTAL%20AMARELO%20(PRINCIPAL).svg"
+                        alt="AUVP"
+                        style="height:40px; margin-bottom:22px;"
+                    />
+                    <p class="category-tag" style="margin-bottom:12px;">Ferramentas de Investimento</p>
+                    <h1 style="font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 8px;">
                         Explorador de Ativos Financeiros
                     </h1>
-                    <p style="font-size: 15px; color: var(--text-muted); max-width: 560px;">
+                    <p style="font-size: 15px; color: var(--text-muted); max-width: 520px; line-height:1.6;">
                         Explore, compare e entenda a tributação, riscos e garantias de cada ativo financeiro.
                     </p>
                 </header>
 
-                <div class="mb-6" style="display:flex; flex-direction:column; gap:12px;">
+                <div class="mb-6" style="display:flex; flex-direction:column; gap:10px;">
                     <div style="position:relative;">
                         <i data-lucide="search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#a1a1aa; width:18px; height:18px;"></i>
                         <input
@@ -736,19 +784,33 @@
                             oninput="handleSearch(this)"
                         />
                     </div>
-                    <div class="no-scrollbar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;">
-                        ${categories.map(cat => `
-                            <button
-                                onclick="setCategory('${cat}')"
-                                class="filter-tab${selectedCategory === cat ? ' active' : ''}"
-                            >${cat}</button>
-                        `).join('')}
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div class="no-scrollbar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; flex:1;">
+                            ${categories.map(cat => `
+                                <button
+                                    onclick="setCategory('${cat}')"
+                                    class="filter-tab${selectedCategory === cat ? ' active' : ''}"
+                                >${cat}</button>
+                            `).join('')}
+                        </div>
+                        <div style="display:flex; gap:6px; flex-shrink:0;">
+                            <button onclick="setViewMode('list')" class="view-toggle-btn${viewMode === 'list' ? ' active' : ''}" title="Visualização em lista">
+                                <i data-lucide="layout-list" style="width:16px; height:16px;"></i>
+                            </button>
+                            <button onclick="setViewMode('grid')" class="view-toggle-btn${viewMode === 'grid' ? ' active' : ''}" title="Visualização em grade">
+                                <i data-lucide="layout-grid" style="width:16px; height:16px;"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
 
             // HTML da Lista de Ativos
-            html += `<div class="grid grid-cols-1 gap-4">`;
+            if (viewMode === 'grid') {
+                html += `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px;">`;
+            } else {
+                html += `<div class="grid grid-cols-1 gap-4">`;
+            }
 
             if (filteredAssets.length > 0) {
                 html += filteredAssets.map(asset => {
@@ -762,8 +824,22 @@
                         : asset.category === "Criptoativos" ? "Regulação"
                         : "Pessoa Jurídica (PJ)";
 
+                    const cardGridSpan = viewMode === 'grid' && isExpanded ? 'grid-column:1/-1;' : '';
                     return `
-                    <div class="asset-card${isExpanded ? ' is-expanded' : ''}" style="${isExpanded ? `border-color:${iconDetails.color};box-shadow:0 4px 24px ${iconDetails.bg};` : ''}">
+                    <div class="asset-card${isExpanded ? ' is-expanded' : ''}" style="${cardGridSpan}${isExpanded ? `border-color:${iconDetails.color};box-shadow:0 4px 24px ${iconDetails.bg};` : ''}">
+                        ${viewMode === 'grid' && !isExpanded ? `
+                        <div style="padding:16px; cursor:pointer;" onclick="toggleExpand(${asset.id})">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                                <div class="card-icon-wrap" style="width:38px; height:38px; background:${iconDetails.bg};">
+                                    <i data-lucide="${iconDetails.name}" style="color:${iconDetails.color}; width:17px; height:17px;"></i>
+                                </div>
+                                <span style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; background:${risk.bg}; color:${risk.color};">${risk.label}</span>
+                            </div>
+                            <span class="category-tag" style="color:${iconDetails.color}; background:${iconDetails.bg};">${asset.category}</span>
+                            <h3 style="font-size:13px; font-weight:700; color:var(--text-primary); line-height:1.3; margin-top:6px;">${asset.name}</h3>
+                            <p class="line-clamp-2" style="font-size:11px; color:var(--text-muted); margin-top:4px; line-height:1.5;">${asset.summary}</p>
+                        </div>
+                        ` : `
                         <div style="padding: 16px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px;" onclick="toggleExpand(${asset.id})">
                             <div style="display:flex; align-items:center; gap:12px; min-width:0;">
                                 <div class="card-icon-wrap" style="width:40px; height:40px; min-width:40px; background:${iconDetails.bg};">
@@ -783,6 +859,7 @@
                                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" style="color:#a1a1aa; width:18px; height:18px; flex-shrink:0;"></i>
                             </div>
                         </div>
+                        `}
 
                         ${isExpanded ? `
                         <div class="expanded-panel animate-fade-in" style="padding: 20px 18px 22px;">
