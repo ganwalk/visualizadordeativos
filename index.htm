@@ -27,11 +27,7 @@
         * { font-family: 'Inter', sans-serif; }
 
         body {
-            background-color: #f2f0eb;
-            background-image:
-                radial-gradient(ellipse at 15% 15%, rgba(239, 191, 78, 0.10) 0%, transparent 55%),
-                radial-gradient(ellipse at 85% 85%, rgba(239, 191, 78, 0.07) 0%, transparent 55%);
-            background-attachment: fixed;
+            background-color: #F6f6f6;
         }
 
         /* ── Scrollbar ── */
@@ -67,8 +63,6 @@
             box-shadow: 0 12px 36px var(--gold-shadow);
         }
         .asset-card.is-expanded {
-            border-color: var(--gold);
-            box-shadow: 0 4px 24px var(--gold-shadow);
             transform: none;
         }
 
@@ -95,15 +89,7 @@
             flex-shrink: 0;
         }
 
-        /* ── Risk badge ── */
-        .risk-badge-normal {
-            background: var(--gold-bg);
-            color: var(--gold-dark);
-        }
-        .risk-badge-high {
-            background: rgba(239, 68, 68, 0.10);
-            color: #dc2626;
-        }
+        /* risk badges are styled inline per asset */
 
         /* ── Search input ── */
         .search-input {
@@ -644,13 +630,50 @@
 
         const getCategoryIconDetails = (cat) => {
             switch(cat) {
-                case "Renda Fixa - Pública": return { name: "shield-check", color: "text-blue-500" };
-                case "Renda Fixa - Privada Bancária": return { name: "building-2", color: "text-indigo-500" };
-                case "Renda Fixa - Crédito Privado": return { name: "wallet", color: "text-teal-500" };
-                case "Criptoativos": return { name: "coins", color: "text-orange-500" };
-                case "Renda Variável": return { name: "trending-up", color: "text-green-500" };
-                default: return { name: "line-chart", color: "text-gray-500" };
+                case "Renda Fixa - Pública":
+                    return { name: "shield-check", color: "#2563eb", bg: "rgba(37,99,235,0.10)" };
+                case "Renda Fixa - Privada Bancária":
+                    return { name: "building-2",   color: "#7c3aed", bg: "rgba(124,58,237,0.10)" };
+                case "Renda Fixa - Crédito Privado":
+                    return { name: "wallet",        color: "#0d9488", bg: "rgba(13,148,136,0.10)" };
+                case "Renda Variável":
+                    return { name: "trending-up",   color: "#16a34a", bg: "rgba(22,163,74,0.10)" };
+                case "Criptoativos":
+                    return { name: "coins",         color: "#ea580c", bg: "rgba(234,88,12,0.10)" };
+                default:
+                    return { name: "line-chart",    color: "#71717a", bg: "rgba(113,113,122,0.10)" };
             }
+        };
+
+        const getRiskLevel = (asset) => {
+            const cat = asset.category;
+            const g = asset.guarantees.toLowerCase();
+            const noFGC = g.includes('não conta') || g.includes('não possui') || g.includes('inexistente');
+
+            if (cat === "Renda Fixa - Pública")
+                return { label: "Baixo",         bg: "rgba(22,163,74,0.12)",   color: "#16a34a" };
+
+            if (cat === "Renda Fixa - Privada Bancária")
+                return noFGC
+                    ? { label: "Moderado",       bg: "rgba(14,165,233,0.12)",  color: "#0284c7" }
+                    : { label: "Baixo-Mod.",     bg: "rgba(52,211,153,0.12)",  color: "#059669" };
+
+            if (cat === "Renda Fixa - Crédito Privado")
+                return asset.name.toLowerCase().includes('coe')
+                    ? { label: "Alto",           bg: "rgba(234,88,12,0.12)",   color: "#ea580c" }
+                    : { label: "Moderado-Alto",  bg: "rgba(245,158,11,0.12)",  color: "#d97706" };
+
+            if (cat === "Renda Variável")
+                return asset.name.toLowerCase().includes('fii')
+                    ? { label: "Moderado-Alto",  bg: "rgba(245,158,11,0.12)",  color: "#d97706" }
+                    : { label: "Alto",           bg: "rgba(234,88,12,0.12)",   color: "#ea580c" };
+
+            if (cat === "Criptoativos")
+                return asset.name.toLowerCase().includes('stablecoin')
+                    ? { label: "Alto",           bg: "rgba(234,88,12,0.12)",   color: "#ea580c" }
+                    : { label: "Muito Alto",     bg: "rgba(220,38,38,0.12)",   color: "#dc2626" };
+
+            return { label: "Moderado",          bg: "rgba(14,165,233,0.12)",  color: "#0284c7" };
         };
 
         // Funções de manipulação de estado
@@ -731,26 +754,23 @@
                 html += filteredAssets.map(asset => {
                     const isExpanded = expandedId === asset.id;
                     const iconDetails = getCategoryIconDetails(asset.category);
-                    const isHighRisk = asset.risks.toLowerCase().includes('altíssima') || asset.risks.toLowerCase().includes('volatilidade');
-                    const riskBadgeClass = isHighRisk ? 'risk-badge-high' : 'risk-badge-normal';
+                    const risk = getRiskLevel(asset);
                     const taxLabel1 = asset.category === "Renda Variável" ? "Compra e Venda no Mesmo Dia"
                         : asset.category === "Criptoativos" ? "Imposto"
                         : "Pessoa Física (PF)";
                     const taxLabel2 = asset.category === "Renda Variável" ? "Compra e Venda em Dias Diferentes"
                         : asset.category === "Criptoativos" ? "Regulação"
                         : "Pessoa Jurídica (PJ)";
-                    const riskSnippet = asset.risks.split('.')[0];
-                    const riskShort = riskSnippet.length > 32 ? riskSnippet.substring(0, 32) + '…' : riskSnippet;
 
                     return `
-                    <div class="asset-card${isExpanded ? ' is-expanded' : ''}">
+                    <div class="asset-card${isExpanded ? ' is-expanded' : ''}" style="${isExpanded ? `border-color:${iconDetails.color};box-shadow:0 4px 24px ${iconDetails.bg};` : ''}">
                         <div style="padding: 16px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px;" onclick="toggleExpand(${asset.id})">
                             <div style="display:flex; align-items:center; gap:12px; min-width:0;">
-                                <div class="card-icon-wrap" style="width:40px; height:40px; min-width:40px;">
-                                    <i data-lucide="${iconDetails.name}" style="color:var(--gold-dark); width:18px; height:18px;"></i>
+                                <div class="card-icon-wrap" style="width:40px; height:40px; min-width:40px; background:${iconDetails.bg};">
+                                    <i data-lucide="${iconDetails.name}" style="color:${iconDetails.color}; width:18px; height:18px;"></i>
                                 </div>
                                 <div style="min-width:0;">
-                                    <span class="category-tag">${asset.category}</span>
+                                    <span class="category-tag" style="color:${iconDetails.color}; background:${iconDetails.bg};">${asset.category}</span>
                                     <h3 style="font-size:clamp(13px,2vw,16px); font-weight:700; color:var(--text-primary); line-height:1.3; margin-top:4px;">${asset.name}</h3>
                                     <p class="line-clamp-1" style="font-size:12px; color:var(--text-muted); margin-top:2px;">${asset.summary}</p>
                                 </div>
@@ -758,7 +778,7 @@
                             <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
                                 <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
                                     <span style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted);">Risco</span>
-                                    <span class="${riskBadgeClass}" style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;">${riskShort}</span>
+                                    <span style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; background:${risk.bg}; color:${risk.color};">${risk.label}</span>
                                 </div>
                                 <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" style="color:#a1a1aa; width:18px; height:18px; flex-shrink:0;"></i>
                             </div>
@@ -770,8 +790,8 @@
 
                                 <section>
                                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                                        <i data-lucide="wallet" style="color:var(--gold-dark); width:15px; height:15px; flex-shrink:0;"></i>
-                                        <span class="section-title" style="color:var(--gold-dark);">Tributação</span>
+                                        <i data-lucide="wallet" style="color:${iconDetails.color}; width:15px; height:15px; flex-shrink:0;"></i>
+                                        <span class="section-title" style="color:${iconDetails.color};">Tributação</span>
                                     </div>
                                     <div style="display:flex; flex-direction:column; gap:8px;">
                                         <div class="detail-card">
