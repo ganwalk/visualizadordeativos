@@ -4,36 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explorador de Ativos Financeiros: Tributação, Riscos e Garantias</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Ocultar scrollbar mantendo a funcionalidade de scroll */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        :root {
+            --gold: #efbf4e;
+            --gold-dark: #d4a73d;
+            --gold-bg: rgba(239, 191, 78, 0.1);
+            --gold-shadow: rgba(239, 191, 78, 0.25);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(0, 0, 0, 0.10);
+            --text-primary: #18181b;
+            --text-muted: #71717a;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: #f2f0eb;
+            background-image:
+                radial-gradient(ellipse at 15% 15%, rgba(239, 191, 78, 0.10) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 85%, rgba(239, 191, 78, 0.07) 0%, transparent 55%);
+            background-attachment: fixed;
         }
+
+        /* ── Scrollbar ── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Line-clamp ── */
         .line-clamp-1 {
             display: -webkit-box;
             -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;  
+            -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        /* Animação suave para o accordion */
+
+        /* ── Fade-in ── */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+        .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+
+        /* ── Cards de ativos ── */
+        .asset-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
+        .asset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px var(--gold-shadow);
+        }
+        .asset-card.is-expanded {
+            border-color: var(--gold);
+            box-shadow: 0 4px 24px var(--gold-shadow);
+            transform: none;
+        }
+
+        /* ── Tag de categoria ── */
+        .category-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold-dark);
+            background: var(--gold-bg);
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* ── Ícone do card ── */
+        .card-icon-wrap {
+            background: var(--gold-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ── Risk badge ── */
+        .risk-badge-normal {
+            background: var(--gold-bg);
+            color: var(--gold-dark);
+        }
+        .risk-badge-high {
+            background: rgba(239, 68, 68, 0.10);
+            color: #dc2626;
+        }
+
+        /* ── Search input ── */
+        .search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 16px 12px 44px;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .search-input::placeholder { color: #a1a1aa; }
+        .search-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(239, 191, 78, 0.18);
+        }
+
+        /* ── Filter tabs ── */
+        .filter-tab {
+            padding: 7px 15px;
+            border-radius: 9999px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .filter-tab:hover {
+            background: var(--gold-bg);
+            border-color: var(--gold);
+            color: var(--gold-dark);
+        }
+        .filter-tab.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #18181b;
+            font-weight: 700;
+            box-shadow: 0 4px 14px var(--gold-shadow);
+        }
+
+        /* ── Painel expandido ── */
+        .expanded-panel {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0,0,0,0.07);
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* ── Detail cards dentro do painel ── */
+        .detail-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .detail-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold-dark);
+            margin-bottom: 4px;
+        }
+        .detail-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ── Section headers ── */
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── Empty state ── */
+        .empty-state {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px dashed rgba(0,0,0,0.15);
+            border-radius: 16px;
+        }
+
+        /* ── Clear button ── */
+        .clear-btn {
+            color: var(--gold-dark);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+        .clear-btn:hover { color: var(--gold); }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 p-3 sm:p-6 lg:p-8 font-sans text-slate-900">
+<body class="min-h-screen p-3 sm:p-6 lg:p-8" style="color: var(--text-primary)">
 
     <div class="max-w-6xl mx-auto w-full" id="app-root">
         <!-- O conteúdo será injetado aqui pelo JavaScript -->
@@ -510,34 +692,33 @@
 
             // HTML Base (Header, Pesquisa, Filtros)
             let html = `
-                <header class="mb-6">
-                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">Explorador de Ativos Financeiros: Tributação, Riscos e Garantias</h1>
-                    <p class="text-sm sm:text-base text-slate-600">Explore, compare e entenda os riscos e tributações de cada ativo financeiro.</p>
+                <header class="mb-7">
+                    <p class="category-tag mb-3">Ferramentas de Investimento</p>
+                    <h1 style="font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 6px;">
+                        Explorador de Ativos Financeiros
+                    </h1>
+                    <p style="font-size: 15px; color: var(--text-muted); max-width: 560px;">
+                        Explore, compare e entenda a tributação, riscos e garantias de cada ativo financeiro.
+                    </p>
                 </header>
 
-                <div class="mb-6 space-y-3">
-                    <div class="relative w-full">
-                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                <div class="mb-6" style="display:flex; flex-direction:column; gap:12px;">
+                    <div style="position:relative;">
+                        <i data-lucide="search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#a1a1aa; width:18px; height:18px;"></i>
                         <input
                             type="text"
                             placeholder="Buscar ativo ou característica..."
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm"
+                            class="search-input"
                             value="${searchTerm}"
                             oninput="handleSearch(this)"
                         />
                     </div>
-                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                    <div class="no-scrollbar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;">
                         ${categories.map(cat => `
                             <button
                                 onclick="setCategory('${cat}')"
-                                class="px-3 sm:px-4 py-2 rounded-full whitespace-nowrap text-xs sm:text-sm font-medium transition-all ${
-                                    selectedCategory === cat
-                                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
-                                }"
-                            >
-                                ${cat}
-                            </button>
+                                class="filter-tab${selectedCategory === cat ? ' active' : ''}"
+                            >${cat}</button>
                         `).join('')}
                     </div>
                 </div>
@@ -550,101 +731,100 @@
                 html += filteredAssets.map(asset => {
                     const isExpanded = expandedId === asset.id;
                     const iconDetails = getCategoryIconDetails(asset.category);
-                    const riskWarning = asset.risks.toLowerCase().includes('altíssima') || asset.risks.toLowerCase().includes('volatilidade')
-                        ? "bg-red-50 text-red-600"
-                        : "bg-green-50 text-green-600";
+                    const isHighRisk = asset.risks.toLowerCase().includes('altíssima') || asset.risks.toLowerCase().includes('volatilidade');
+                    const riskBadgeClass = isHighRisk ? 'risk-badge-high' : 'risk-badge-normal';
                     const taxLabel1 = asset.category === "Renda Variável" ? "Compra e Venda no Mesmo Dia"
                         : asset.category === "Criptoativos" ? "Imposto"
                         : "Pessoa Física (PF)";
                     const taxLabel2 = asset.category === "Renda Variável" ? "Compra e Venda em Dias Diferentes"
                         : asset.category === "Criptoativos" ? "Regulação"
                         : "Pessoa Jurídica (PJ)";
+                    const riskSnippet = asset.risks.split('.')[0];
+                    const riskShort = riskSnippet.length > 32 ? riskSnippet.substring(0, 32) + '…' : riskSnippet;
 
                     return `
-                    <div class="bg-white rounded-2xl border transition-all duration-300 ${
-                        isExpanded ? "border-blue-400 ring-1 ring-blue-100 shadow-lg" : "border-slate-200 hover:shadow-md"
-                    }">
-                        <div class="p-4 sm:p-5 cursor-pointer flex items-center justify-between gap-3" onclick="toggleExpand(${asset.id})">
-                            <div class="flex items-center gap-3 min-w-0">
-                                <div class="p-2 sm:p-3 bg-slate-50 rounded-xl shrink-0">
-                                    <i data-lucide="${iconDetails.name}" class="${iconDetails.color} w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <div class="asset-card${isExpanded ? ' is-expanded' : ''}">
+                        <div style="padding: 16px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px;" onclick="toggleExpand(${asset.id})">
+                            <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+                                <div class="card-icon-wrap" style="width:40px; height:40px; min-width:40px;">
+                                    <i data-lucide="${iconDetails.name}" style="color:var(--gold-dark); width:18px; height:18px;"></i>
                                 </div>
-                                <div class="min-w-0">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">${asset.category}</span>
-                                    <h3 class="text-sm sm:text-base lg:text-lg font-bold text-slate-800 leading-tight">${asset.name}</h3>
-                                    <p class="text-xs sm:text-sm text-slate-500 mt-0.5 line-clamp-1">${asset.summary}</p>
+                                <div style="min-width:0;">
+                                    <span class="category-tag">${asset.category}</span>
+                                    <h3 style="font-size:clamp(13px,2vw,16px); font-weight:700; color:var(--text-primary); line-height:1.3; margin-top:4px;">${asset.name}</h3>
+                                    <p class="line-clamp-1" style="font-size:12px; color:var(--text-muted); margin-top:2px;">${asset.summary}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-                                <div class="flex flex-col items-end">
-                                    <span class="text-[10px] uppercase font-bold text-slate-400 hidden sm:block">Risco</span>
-                                    <span class="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded ${riskWarning}">
-                                        ${asset.risks.split('.')[0].substring(0, 30)}${asset.risks.split('.')[0].length > 30 ? '…' : ''}
-                                    </span>
+                            <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                                    <span style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted);">Risco</span>
+                                    <span class="${riskBadgeClass}" style="font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;">${riskShort}</span>
                                 </div>
-                                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" class="text-slate-400 w-4 h-4 sm:w-5 sm:h-5"></i>
+                                <i data-lucide="${isExpanded ? 'chevron-down' : 'chevron-right'}" style="color:#a1a1aa; width:18px; height:18px; flex-shrink:0;"></i>
                             </div>
                         </div>
 
                         ${isExpanded ? `
-                        <div class="border-t border-slate-100 p-4 sm:p-6 bg-slate-50/50 rounded-b-2xl animate-fade-in">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        <div class="expanded-panel animate-fade-in" style="padding: 20px 18px 22px;">
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
+
                                 <section>
-                                    <div class="flex items-center gap-2 text-blue-600 font-bold mb-3">
-                                        <i data-lucide="wallet" class="w-4 h-4 shrink-0"></i>
-                                        <h4 class="text-sm sm:text-base">Tributação</h4>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                        <i data-lucide="wallet" style="color:var(--gold-dark); width:15px; height:15px; flex-shrink:0;"></i>
+                                        <span class="section-title" style="color:var(--gold-dark);">Tributação</span>
                                     </div>
-                                    <div class="space-y-2 sm:space-y-3">
-                                        <div class="bg-white p-2.5 sm:p-3 rounded-lg border border-slate-200">
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">${taxLabel1}</p>
-                                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${asset.taxPF}</p>
+                                    <div style="display:flex; flex-direction:column; gap:8px;">
+                                        <div class="detail-card">
+                                            <p class="detail-label">${taxLabel1}</p>
+                                            <p class="detail-text">${asset.taxPF}</p>
                                         </div>
-                                        <div class="bg-white p-2.5 sm:p-3 rounded-lg border border-slate-200">
-                                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">${taxLabel2}</p>
-                                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${asset.taxPJ}</p>
+                                        <div class="detail-card">
+                                            <p class="detail-label">${taxLabel2}</p>
+                                            <p class="detail-text">${asset.taxPJ}</p>
                                         </div>
                                     </div>
                                 </section>
 
                                 <section>
-                                    <div class="flex items-center gap-2 text-indigo-600 font-bold mb-3">
-                                        <i data-lucide="building-2" class="w-4 h-4 shrink-0"></i>
-                                        <h4 class="text-sm sm:text-base">Operacional</h4>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                        <i data-lucide="building-2" style="color:var(--text-primary); width:15px; height:15px; flex-shrink:0;"></i>
+                                        <span class="section-title" style="color:var(--text-primary);">Operacional</span>
                                     </div>
-                                    <div class="space-y-3 sm:space-y-4">
+                                    <div style="display:flex; flex-direction:column; gap:10px;">
                                         <div>
-                                            <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Como Comprar:</h5>
-                                            <p class="text-xs sm:text-sm text-slate-700">${asset.howToBuy}</p>
+                                            <p class="detail-label">Como Comprar</p>
+                                            <p class="detail-text">${asset.howToBuy}</p>
                                         </div>
                                         <div>
-                                            <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Custos Adicionais:</h5>
-                                            <p class="text-xs sm:text-sm text-slate-700">${asset.costs}</p>
+                                            <p class="detail-label">Custos Adicionais</p>
+                                            <p class="detail-text">${asset.costs}</p>
                                         </div>
                                     </div>
                                 </section>
 
                                 <section>
-                                    <div class="flex items-center gap-2 text-amber-600 font-bold mb-3">
-                                        <i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i>
-                                        <h4 class="text-sm sm:text-base">Segurança</h4>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                        <i data-lucide="shield-check" style="color:#b45309; width:15px; height:15px; flex-shrink:0;"></i>
+                                        <span class="section-title" style="color:#b45309;">Segurança</span>
                                     </div>
-                                    <div class="space-y-3 sm:space-y-4">
-                                        <div class="flex gap-2 sm:gap-3">
-                                            <i data-lucide="alert-triangle" class="text-amber-500 shrink-0 mt-0.5 w-4 h-4"></i>
+                                    <div style="display:flex; flex-direction:column; gap:10px;">
+                                        <div style="display:flex; gap:8px; align-items:flex-start;">
+                                            <i data-lucide="alert-triangle" style="color:#d97706; flex-shrink:0; margin-top:1px; width:14px; height:14px;"></i>
                                             <div>
-                                                <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Principais Riscos:</h5>
-                                                <p class="text-xs sm:text-sm text-slate-700">${asset.risks}</p>
+                                                <p class="detail-label">Principais Riscos</p>
+                                                <p class="detail-text">${asset.risks}</p>
                                             </div>
                                         </div>
-                                        <div class="flex gap-2 sm:gap-3">
-                                            <i data-lucide="lock" class="text-blue-500 shrink-0 mt-0.5 w-4 h-4"></i>
+                                        <div style="display:flex; gap:8px; align-items:flex-start;">
+                                            <i data-lucide="lock" style="color:var(--gold-dark); flex-shrink:0; margin-top:1px; width:14px; height:14px;"></i>
                                             <div>
-                                                <h5 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase mb-1">Garantias:</h5>
-                                                <p class="text-xs sm:text-sm text-slate-700">${asset.guarantees}</p>
+                                                <p class="detail-label">Garantias</p>
+                                                <p class="detail-text">${asset.guarantees}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </section>
+
                             </div>
                         </div>
                         ` : ''}
@@ -653,15 +833,12 @@
                 }).join('');
             } else {
                 html += `
-                    <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
-                        <div class="flex justify-center mb-4">
-                            <i data-lucide="search" class="text-slate-300 w-12 h-12"></i>
+                    <div class="empty-state" style="text-align:center; padding:64px 24px;">
+                        <div style="display:flex; justify-content:center; margin-bottom:16px;">
+                            <i data-lucide="search" style="color:#d4d4d8; width:48px; height:48px;"></i>
                         </div>
-                        <p class="text-slate-500">Nenhum ativo encontrado com esses filtros.</p>
-                        <button 
-                            onclick="clearFilters()"
-                            class="mt-4 text-blue-600 font-medium hover:underline cursor-pointer"
-                        >
+                        <p style="color:var(--text-muted); font-size:15px;">Nenhum ativo encontrado com esses filtros.</p>
+                        <button onclick="clearFilters()" class="clear-btn" style="margin-top:14px; display:inline-block;">
                             Limpar todos os filtros
                         </button>
                     </div>
@@ -672,9 +849,9 @@
 
             // Footer
             html += `
-                <footer class="mt-12 text-center text-slate-400 text-xs">
-                    <p>© 2026 Explorador de Ativos Financeiros - Dados baseados na Tabela Completa de Ativos.</p>
-                    <p class="mt-1">Lembre-se: Rentabilidade passada não é garantia de retorno futuro.</p>
+                <footer style="margin-top:48px; text-align:center; color:var(--text-muted); font-size:12px; opacity:0.7;">
+                    <p>© 2026 Explorador de Ativos Financeiros · Dados baseados na Tabela Completa de Ativos.</p>
+                    <p style="margin-top:4px;">Rentabilidade passada não é garantia de retorno futuro.</p>
                 </footer>
             `;
 
